@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 21
-    buildToolsVersion '25.0.0'
+    buildToolsVersion '27.0.0'
 
     defaultConfig {
         applicationId "com.danielkim.soundrecorder"
@@ -17,15 +18,25 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+
+    dexOptions {
+        preDexLibraries = false
+        additionalParameters = ["--core-library"]
+    }
     lintOptions{
         disable 'MissingTranslation'
     }
 }
 
 dependencies {
-    compile 'com.android.support:appcompat-v7:21.0.+'
-    compile 'com.android.support:cardview-v7:21.0.+'
-    compile 'com.android.support:recyclerview-v7:21.0.+'
+    compile 'com.android.support:appcompat-v7:21.0.2'
+    compile 'com.android.support:cardview-v7:21.0.2'
+    compile 'com.android.support:recyclerview-v7:21.0.2'
     compile 'com.melnykov:floatingactionbutton:1.1.0'
     compile 'com.jpardogo.materialtabstrip:library:1.0.6'
+    compile project(':sapphire-core')
+//    compile files('dependecines/libs/apache.harmony.jar')
+//    compile files('libs/java.rmi.jar')
+//    compile files('libs/sapphire-core.jar')
+    //implementation fileTree(dir: 'libs', include: ['*.jar'])
 }

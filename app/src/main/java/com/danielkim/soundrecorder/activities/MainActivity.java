@@ -2,6 +2,7 @@ package com.danielkim.soundrecorder.activities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -19,6 +20,14 @@ import com.danielkim.soundrecorder.fragments.FileViewerFragment;
 import com.danielkim.soundrecorder.fragments.LicensesFragment;
 import com.danielkim.soundrecorder.fragments.RecordFragment;
 
+import java.net.InetSocketAddress;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+
+import sapphire.kernel.server.KernelServer;
+import sapphire.kernel.server.KernelServerImpl;
+import sapphire.oms.OMSServer;
+
 
 public class MainActivity extends ActionBarActivity{
 
@@ -30,6 +39,7 @@ public class MainActivity extends ActionBarActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        new AccessRemoteObject().execute();
         setContentView(R.layout.activity_main);
 
         pager = (ViewPager) findViewById(R.id.pager);
@@ -58,15 +68,36 @@ public class MainActivity extends ActionBarActivity{
         // as you specify a parent activity in AndroidManifest.xml.
         // Handle presses on the action bar items
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                Intent i = new Intent(this, SettingsActivity.class);
-                startActivity(i);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
+//            case R.id.action_settings:
+//                Intent i = new Intent(this, SettingsActivity.class);
+//                startActivity(i);
+//                return true;
+//            default:
+//                return super.onOptionsItemSelected(item);
         }
+
+        return true;
     }
 
+    private class AccessRemoteObject extends AsyncTask<String, Void, String> {
+        protected String doInBackground(String... params) {
+            String response = null;
+            try {
+                Registry registry = LocateRegistry.getRegistry(Configuration.omsAddress[0], Integer.parseInt(Configuration.omsAddress[1]));
+                OMSServer server = (OMSServer) registry.lookup("SapphireOMS");
+
+                KernelServer nodeServer = new KernelServerImpl(new InetSocketAddress(
+                        Configuration.hostAddress[0], Integer.parseInt(Configuration.hostAddress[1])),
+                        new InetSocketAddress(Configuration.omsAddress[0], Integer.parseInt(Configuration.omsAddress[1])));
+                SoundRecorderManager srm = (SoundRecorderManager) server.getAppEntryPoint();
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+    }
     public class MyAdapter extends FragmentPagerAdapter {
         private String[] titles = { getString(R.string.tab_title_record),
                 getString(R.string.tab_title_saved_recordings) };

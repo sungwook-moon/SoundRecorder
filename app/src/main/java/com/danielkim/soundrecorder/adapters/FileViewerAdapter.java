@@ -20,6 +20,7 @@ import android.widget.Toast;
 import android.text.format.DateUtils;
 
 import com.danielkim.soundrecorder.DBHelper;
+import com.danielkim.soundrecorder.DoPrint;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.danielkim.soundrecorder.fragments.PlaybackFragment;
@@ -40,6 +41,8 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
 
     private DBHelper mDatabase;
 
+    private DoPrint doPrint;
+
     RecordingItem item;
     Context mContext;
     LinearLayoutManager llm;
@@ -50,6 +53,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
         mDatabase = new DBHelper(mContext);
         mDatabase.setOnDatabaseChangedListener(this);
         llm = linearLayoutManager;
+        doPrint = new DoPrint();
     }
 
     @Override
@@ -78,7 +82,7 @@ public class FileViewerAdapter extends RecyclerView.Adapter<FileViewerAdapter.Re
             public void onClick(View view) {
                 try {
                     PlaybackFragment playbackFragment =
-                            new PlaybackFragment().newInstance(getItem(holder.getPosition()));
+                            new PlaybackFragment().newInstance(getItem(holder.getPosition()), doPrint);
 
                     FragmentTransaction transaction = ((FragmentActivity) mContext)
                             .getSupportFragmentManager()

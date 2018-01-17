@@ -16,6 +16,7 @@ import android.view.WindowManager;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.danielkim.soundrecorder.DoPrint;
 import com.danielkim.soundrecorder.R;
 import com.danielkim.soundrecorder.RecordingItem;
 import com.melnykov.fab.FloatingActionButton;
@@ -23,10 +24,13 @@ import com.melnykov.fab.FloatingActionButton;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import sapphire.app.SapphireObject;
+import sapphire.policy.ShiftPolicy;
+
 /**
  * Created by Daniel on 1/1/2015.
  */
-public class PlaybackFragment extends DialogFragment{
+public class PlaybackFragment extends DialogFragment {
 
     private static final String LOG_TAG = "PlaybackFragment";
 
@@ -50,7 +54,10 @@ public class PlaybackFragment extends DialogFragment{
     long minutes = 0;
     long seconds = 0;
 
-    public PlaybackFragment newInstance(RecordingItem item) {
+    public PlaybackFragment newInstance(RecordingItem item, DoPrint doPrint) {
+
+        doPrint.PrintMsg();
+
         PlaybackFragment f = new PlaybackFragment();
         Bundle b = new Bundle();
         b.putParcelable(ARG_ITEM, item);
